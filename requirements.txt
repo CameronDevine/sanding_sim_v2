@@ -1,0 +1,4 @@
+matplotlib==3.5.1
+mr-sim==0.3.0
+numpy==1.22.3
+panda3d==1.10.11
