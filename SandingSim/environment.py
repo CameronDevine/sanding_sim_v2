@@ -1,6 +1,7 @@
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import WindowProperties, AmbientLight
 import numpy as np
+from os import path
 
 
 class Environement(ShowBase):
@@ -18,7 +19,9 @@ class Environement(ShowBase):
         for region in self.win.getActiveDisplayRegions():
             region.setActive(False)
 
-        self.environment = self.loader.loadModel("environment.bam")
+        self.environment = self.loader.loadModel(
+            path.join(path.dirname(__file__), "..", "environment.bam")
+        )
         self.environment.reparentTo(self.render)
 
         self.region = self.win.makeDisplayRegion()
