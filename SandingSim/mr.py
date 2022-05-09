@@ -2,6 +2,7 @@ from .control import Control
 import mr_sim
 from matplotlib.colors import LinearSegmentedColormap
 from .mr_control import OrbitalDepthControl
+from .classifier import Classifier
 
 MR_Sim = mr_sim.create_simulation(
     mr_sim.Flat, mr_sim.Round, mr_sim.Orbital, mr_sim.Preston
@@ -18,13 +19,17 @@ class MR(Control):
     kp = 1e-9
     sander_radius = 0.122 / 2
     window_length = 0.08
-    window_width = 0.02
+    window_width = 0.04
 
     color_over = [185, 154, 100]
     color_start = [150, 150, 81]
     color_over = [100, 154, 185]
     depth_over = 7e-5
     depth_done = 5e-5
+
+    curvature_length = 0.3
+    curvature_end = 0.667
+    curvature_start = 4
 
     def __init__(self):
         super().__init__()
@@ -84,17 +89,20 @@ class MR(Control):
         )
         self.mr_sim.set_speed(self.omega_m)
 
+        self.classifier = Classifier()
+
         self.taskMgr.add(self.mr, "MR Task", priority=2)
 
     def mr(self, task):
         self.mr_sim.dt = base.clock.dt
         self.mr_sim.set_location(-self.sander_y)
-        # self.mr_sim.set_force(self.max_force * self.trigger)
-        self.mr_sim.set_force(
-            self.mr_controller.calculate(
-                vl=self.mr_sim.vl_x, hbar=self.hbar_max * self.trigger
-            )[0]
-        )
+        # force = self.max_force * self.trigger
+        force = self.mr_controller.calculate(
+            vl=self.mr_sim.vl_x, hbar=self.hbar_max * self.trigger
+        )[0]
+        if self.classifier.classify(self.mr_sim.vl_x, base.clock.dt):
+            force = self.max_force
+        self.mr_sim.set_force(force)
         self.mr_sim.step()
 
         window_x_middle = self.tex_x >> 1
