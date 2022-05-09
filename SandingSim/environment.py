@@ -2,6 +2,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import WindowProperties, AmbientLight
 import numpy as np
 from os import path
+from .questionnaire import Questionnaire
 
 
 class Environement(ShowBase):
@@ -16,16 +17,19 @@ class Environement(ShowBase):
         properties.setSize(1000, 750)
         self.win.requestProperties(properties)
 
-        for region in self.win.getActiveDisplayRegions():
-            region.setActive(False)
+        # for region in self.win.getActiveDisplayRegions():
+        #     region.setActive(False)
 
         self.environment = self.loader.loadModel(
             path.join(path.dirname(__file__), "..", "environment.bam")
         )
         self.environment.reparentTo(self.render)
 
-        self.region = self.win.makeDisplayRegion()
-        self.region.setCamera(self.environment.find("Camera/Camera"))
+        self.questionnaire = Questionnaire()
+
+        # self.region = self.win.makeDisplayRegion()
+        # self.region.setCamera(self.environment.find("Camera/Camera"))
+        self.win.getActiveDisplayRegions()[0].setCamera(self.environment.find("Camera/Camera"))
 
         self.sander = self.environment.find("Sander")
 
