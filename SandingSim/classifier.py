@@ -2,12 +2,13 @@ import json
 import numpy as np
 from os import path
 
+
 class Classifier:
     def __init__(self, timeconstant=0.05):
         with open(path.join(path.dirname(__file__), "classifier.json")) as f:
             data = json.load(f)
-        self.vel = data['vel']
-        self.prob = data['prob']
+        self.vel = data["vel"]
+        self.prob = data["prob"]
         self.lowpass = Lowpass(timeconstant)
 
     def get_prob(self, vel):
@@ -15,6 +16,7 @@ class Classifier:
 
     def classify(self, vel, dt):
         return self.lowpass.filter(self.get_prob(vel), dt) > 0.5
+
 
 class Lowpass:
     def __init__(self, timeconstant, default=0):

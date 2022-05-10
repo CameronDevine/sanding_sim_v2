@@ -29,7 +29,9 @@ class Environement(ShowBase):
 
         # self.region = self.win.makeDisplayRegion()
         # self.region.setCamera(self.environment.find("Camera/Camera"))
-        self.win.getActiveDisplayRegions()[0].setCamera(self.environment.find("Camera/Camera"))
+        self.win.getActiveDisplayRegions()[0].setCamera(
+            self.environment.find("Camera/Camera")
+        )
 
         self.sander = self.environment.find("Sander")
 

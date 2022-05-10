@@ -1,5 +1,6 @@
 from direct.gui.DirectGui import *
 
+
 class Questionnaire:
     def __init__(self):
         self.frame = DirectFrame(frameColor=(1, 1, 1, 1), frameSize=(-1, 1, -1, 1))
