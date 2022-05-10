@@ -63,7 +63,9 @@ class Environement(ShowBase):
 
     def set_test_article(self, test_article):
         self.test_article = test_article
-        path_name_show, path_name_hide = self.if_curved_flat(("Curved", "Flat"), ("Flat", "Curved"))
+        path_name_show, path_name_hide = self.if_curved_flat(
+            ("Curved", "Flat"), ("Flat", "Curved")
+        )
         self.environment.find(path_name_hide).hide()
         self.environment.find(path_name_show).show()
 

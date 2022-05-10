@@ -117,9 +117,7 @@ class MR(Control):
         window_x_end = window_x_start + self.mr_sim.profile.shape[1]
 
         window_y_middle = (self.tex_top_lines + self.tex_y) >> 1
-        window_y_start = window_y_middle - int(
-            self.window_width / (2 * self.mr_sim.dy)
-        )
+        window_y_start = window_y_middle - int(self.window_width / (2 * self.mr_sim.dy))
         window_y_end = window_y_start + self.mr_sim.profile.shape[0]
 
         self.tex_image[window_y_start:window_y_end, window_x_start:window_x_end, :] = (
