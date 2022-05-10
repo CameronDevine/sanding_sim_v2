@@ -6,6 +6,8 @@ from .questionnaire import Questionnaire
 
 
 class Environement(ShowBase):
+    test_article = "curved"
+
     def __init__(self):
         super().__init__()
 
@@ -43,7 +45,7 @@ class Environement(ShowBase):
             .reshape(self.tex_x, self.tex_y, 3)
         )
 
-        # self.tex_image[385,:,:] = 255
+        # self.tex_image[365,:,:] = 255
 
         # alight = AmbientLight('alight')
         # alight.setColor((1, 1, 1, 1))
@@ -54,8 +56,16 @@ class Environement(ShowBase):
         # light.node().setShadowCaster(True, 2048, 2048)
         # self.environment.setLight(light)
 
+        self.set_test_article(self.test_article)
+
     def set_texture(self):
         self.tex.setRamImage(self.tex_image.tobytes())
+
+    def set_test_article(self, test_article):
+        self.test_article = test_article
+        path_name_show, path_name_hide = self.if_curved_flat(("Curved", "Flat"), ("Flat", "Curved"))
+        self.environment.find(path_name_hide).hide()
+        self.environment.find(path_name_show).show()
 
     @property
     def tex_x(self):
@@ -99,7 +109,7 @@ class Environement(ShowBase):
 
     @property
     def test_article_thickness(self):
-        return self.if_curved_flat(0.064, 0)
+        return self.if_curved_flat(0.0492, 0.03)
 
     @property
     def test_article_radius(self):

@@ -14,7 +14,7 @@ class MR(Control):
     eccentricity = 0.005
     test_article_width = 0.122
     test_article_length = 0.5
-    tex_top_lines = 385
+    tex_top_lines = 365
     kp = 1e-9
     sander_radius = 0.122 / 2
     pad_stiffness = 70.5e6 / 50
