@@ -5,9 +5,9 @@ import numpy as np
 
 class Control(Environement):
     deadband = 0.05
-    amp = 0.1
+    amp = 0.15
     max_vel = 0.18
-    max_accel = 0.2
+    max_accel = 0.12
     vel = 0
     hover_distance = 0.03
     end = 0

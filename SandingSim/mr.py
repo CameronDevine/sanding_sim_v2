@@ -5,21 +5,21 @@ from .mr_control import OrbitalDepthControl
 from .classifier import Classifier
 
 MR_Sim = mr_sim.create_simulation(
-    mr_sim.Flat, mr_sim.Round, mr_sim.Orbital, mr_sim.Preston
+    mr_sim.ConstantCurvature, mr_sim.Round, mr_sim.Orbital, mr_sim.Preston
 )
 
 
 class MR(Control):
     omega_m = 500
     eccentricity = 0.005
-    max_force = 20
-    test_article_width = 0.1
-    test_article_length = 0.25
-    tex_top_lines = 309
+    test_article_width = 0.122
+    test_article_length = 0.5
+    tex_top_lines = 385
     kp = 1e-9
     sander_radius = 0.122 / 2
-    window_length = 0.08
-    window_width = 0.04
+    pad_stiffness = 70.5e6 / 50
+    window_length = 0.18
+    window_width = 0.03
 
     color_over = [185, 154, 100]
     color_start = [150, 150, 81]
@@ -27,14 +27,16 @@ class MR(Control):
     depth_over = 7e-5
     depth_done = 5e-5
 
-    curvature_length = 0.3
-    curvature_end = 0.667
-    curvature_start = 4
-
     def __init__(self):
         super().__init__()
 
-        self.hbar_max = self.kp * self.eccentricity * self.omega_m * self.max_force / (2 * self.sander_radius * self.max_vel)
+        self.hbar_max = (
+            self.kp
+            * self.eccentricity
+            * self.omega_m
+            * self.max_force
+            / (2 * self.sander_radius * self.max_vel)
+        )
 
         self.mr_controller = OrbitalDepthControl(
             kp=self.kp, R=self.sander_radius, E=self.eccentricity, omega_m=self.omega_m
@@ -86,6 +88,7 @@ class MR(Control):
             kp=self.kp,
             radius=self.sander_radius,
             auto_velocity=True,
+            stiffness=self.pad_stiffness,
         )
         self.mr_sim.set_speed(self.omega_m)
 
@@ -93,18 +96,23 @@ class MR(Control):
 
         self.taskMgr.add(self.mr, "MR Task", priority=2)
 
-    def mr(self, task):
-        self.mr_sim.dt = base.clock.dt
-        self.mr_sim.set_location(-self.sander_y)
-        # force = self.max_force * self.trigger
-        force = self.mr_controller.calculate(
-            vl=self.mr_sim.vl_x, hbar=self.hbar_max * self.trigger
-        )[0]
-        if self.classifier.classify(self.mr_sim.vl_x, base.clock.dt):
-            force = self.max_force
-        self.mr_sim.set_force(force)
-        self.mr_sim.step()
+    def calc_force(self):
+        if self.control == "force":
+            return self.max_force * self.trigger
+        elif self.control == "depth":
+            force = self.mr_controller.calculate(
+                vl=self.mr_sim.vl_x,
+                hbar=self.hbar_max * self.trigger,
+                k1=self.test_article_curvature_x,
+                k2=self.test_article_curvature_y,
+            )[0]
+            if self.classifier.classify(self.mr_sim.vl_x, base.clock.dt):
+                force = self.max_force
+            return force
+        else:
+            raise ValueError('control must be either "force" or "depth".')
 
+    def display_mr(self):
         window_x_middle = self.tex_x >> 1
         window_x_start = window_x_middle - int(
             self.window_length / (2 * self.profile_dx)
@@ -123,4 +131,30 @@ class MR(Control):
 
         self.set_texture()
 
+    def mr(self, task):
+        self.mr_sim.dt = base.clock.dt
+        self.mr_sim.set_location(self.sander_y)
+
+        self.mr_sim.set_force(self.calc_force())
+        self.mr_sim.set_curvature(
+            self.test_article_curvature_x, self.test_article_curvature_y
+        )
+        self.mr_sim.step()
+
+        self.display_mr()
+
         return task.cont
+
+    @property
+    def test_article_curvature_y(self):
+        curvature_slope = (
+            self.test_article_curvature_end - self.test_article_curvature_start
+        ) / self.test_article_curvature_length
+        curvature_mean = (
+            self.test_article_curvature_start + self.test_article_curvature_end
+        ) / 2
+        return curvature_slope * -self.sander_y + curvature_mean
+
+    @property
+    def max_force(self):
+        return self.if_curved_flat(8, 20)

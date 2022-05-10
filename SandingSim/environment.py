@@ -25,7 +25,7 @@ class Environement(ShowBase):
         )
         self.environment.reparentTo(self.render)
 
-        self.questionnaire = Questionnaire()
+        # self.questionnaire = Questionnaire()
 
         # self.region = self.win.makeDisplayRegion()
         # self.region.setCamera(self.environment.find("Camera/Camera"))
@@ -40,6 +40,8 @@ class Environement(ShowBase):
             .copy()
             .reshape(self.tex_x, self.tex_y, 3)
         )
+
+        # self.tex_image[385,:,:] = 255
 
         # alight = AmbientLight('alight')
         # alight.setColor((1, 1, 1, 1))
@@ -84,3 +86,35 @@ class Environement(ShowBase):
     @sander_angle.setter
     def sander_angle(self, val):
         self.sander.setP(np.rad2deg(val))
+
+    def if_curved_flat(self, curved, flat):
+        if self.test_article == "curved":
+            return curved
+        elif self.test_article == "flat":
+            return flat
+        else:
+            raise ValueError('test_article must be either "curved" or "flat".')
+
+    @property
+    def test_article_thickness(self):
+        return self.if_curved_flat(0.064, 0)
+
+    @property
+    def test_article_radius(self):
+        return self.if_curved_flat(0.8, 0)
+
+    @property
+    def test_article_curvature_length(self):
+        return self.if_curved_flat(0.6, 1)
+
+    @property
+    def test_article_curvature_end(self):
+        return self.if_curved_flat(0.667, 0)
+
+    @property
+    def test_article_curvature_start(self):
+        return self.if_curved_flat(10, 0)
+
+    @property
+    def test_article_curvature_x(self):
+        return self.if_curved_flat(1.25, 0)
