@@ -76,14 +76,11 @@ class MR(Control):
             },
         )
 
-        self.profile_dx = self.test_article_length / self.tex_x
-        self.profile_dy = self.test_article_width / (self.tex_y - self.tex_top_lines)
-
         self.mr_sim = MR_Sim(
             self.window_length,
             self.window_width,
-            dx=self.profile_dx,
-            dy=self.profile_dy,
+            dx=self.test_article_length / self.tex_x,
+            dy=self.test_article_width / (self.tex_y - self.tex_top_lines),
             eccentricity=self.eccentricity,
             kp=self.kp,
             radius=self.sander_radius,
@@ -115,13 +112,13 @@ class MR(Control):
     def display_mr(self):
         window_x_middle = self.tex_x >> 1
         window_x_start = window_x_middle - int(
-            self.window_length / (2 * self.profile_dx)
+            self.window_length / (2 * self.mr_sim.dx)
         )
         window_x_end = window_x_start + self.mr_sim.profile.shape[1]
 
         window_y_middle = (self.tex_top_lines + self.tex_y) >> 1
         window_y_start = window_y_middle - int(
-            self.window_width / (2 * self.profile_dy)
+            self.window_width / (2 * self.mr_sim.dy)
         )
         window_y_end = window_y_start + self.mr_sim.profile.shape[0]
 
