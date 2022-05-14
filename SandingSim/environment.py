@@ -3,6 +3,7 @@ from panda3d.core import WindowProperties, AmbientLight
 import numpy as np
 from os import path
 from .questionnaire import Questionnaire
+import json
 
 
 class Environement(ShowBase):
@@ -16,7 +17,11 @@ class Environement(ShowBase):
         # self.render.setShaderAuto()
 
         properties = WindowProperties()
-        properties.setSize(1000, 750)
+        try:
+            with open(path.join(path.dirname(__file__), '..', "window.json")) as f:
+                properties.setSize(*json.load(f))
+        except OSError:
+            properties.setSize(1000, 750)
         self.win.requestProperties(properties)
 
         # for region in self.win.getActiveDisplayRegions():
