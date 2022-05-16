@@ -25,7 +25,7 @@ class Lowpass:
         self.reset()
 
     def alpha(self, dt):
-        return dt / (self.timeconstant * dt)
+        return dt / (self.timeconstant + dt)
 
     def filter(self, val, dt):
         alpha = self.alpha(dt)

@@ -39,7 +39,7 @@ class MR(Control):
         )
 
         self.mr_controller = OrbitalDepthControl(
-            kp=self.kp, R=self.sander_radius, E=self.eccentricity, omega_m=self.omega_m
+            kp=self.kp, R=self.sander_radius, E=self.eccentricity, omega_m=self.omega_m, stiffness=self.pad_stiffness
         )
 
         self.color_done = self.tex_image[0, 0, :]
@@ -89,7 +89,7 @@ class MR(Control):
         )
         self.mr_sim.set_speed(self.omega_m)
 
-        self.classifier = Classifier()
+        self.classifier = Classifier(timeconstant=0.075)
 
         self.taskMgr.add(self.mr, "MR Task", priority=2)
 
@@ -103,7 +103,7 @@ class MR(Control):
                 k1=self.test_article_curvature_x,
                 k2=self.test_article_curvature_y,
             )[0]
-            if self.trigger > 0 and self.classifier.classify(self.mr_sim.vl_x, base.clock.dt):
+            if self.trigger > 0 and self.classifier.classify(self.mr_sim.vl_x, self.dt):
                 force = self.max_force
             return force
         else:
@@ -127,7 +127,7 @@ class MR(Control):
         self.set_texture()
 
     def mr(self, task):
-        self.mr_sim.dt = base.clock.dt
+        self.mr_sim.dt = self.dt
         self.mr_sim.set_location(self.sander_y)
 
         self.mr_sim.set_force(self.calc_force())

@@ -154,3 +154,7 @@ class Environement(ShowBase):
     @property
     def test_article_curvature_x(self):
         return self.if_curved_flat(1.25, 0)
+
+    @property
+    def dt(self):
+        return base.clock.dt

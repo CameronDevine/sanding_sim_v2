@@ -67,12 +67,11 @@ class Control(Environement):
         return task.cont
 
     def move_y(self):
-        dt = base.clock.dt
         stick = self.stick
         if abs(stick) < self.deadband:
             stick = 0
         vel = self.max_vel * stick
-        accel = (vel - self.vel) / dt
+        accel = (vel - self.vel) / self.dt
         if abs(accel) > self.max_accel:
             accel = np.sign(accel) * self.max_accel
         if abs(accel) > 0:
@@ -85,12 +84,12 @@ class Control(Environement):
             stop_pos = self.sander_y
         if abs(stop_pos) >= self.amp and stop_pos * vel > 0:
             accel = self.vel ** 2 / (2 * (self.sander_y - np.sign(stop_pos) * self.amp))
-        self.vel += dt * accel
+        self.vel += self.dt * accel
         old_y = self.sander_y
-        self.sander_y += dt * self.vel
+        self.sander_y += self.dt * self.vel
         if abs(self.sander_y) > self.amp:
             self.sander_y = np.sign(self.sander_y) * self.amp
-            self.vel = (self.sander_y - old_y) / dt
+            self.vel = (self.sander_y - old_y) / self.dt
 
     def move_z(self):
         theta = 0
