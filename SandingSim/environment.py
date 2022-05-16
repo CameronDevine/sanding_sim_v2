@@ -4,6 +4,7 @@ import numpy as np
 from os import path
 from .questionnaire import Questionnaire
 import json
+from .toolbar import Toolbar
 
 
 class Environement(ShowBase):
@@ -16,12 +17,15 @@ class Environement(ShowBase):
 
         # self.render.setShaderAuto()
 
-        properties = WindowProperties()
+        self.window_size = (1000, 750)
         try:
             with open(path.join(path.dirname(__file__), '..', "window.json")) as f:
-                properties.setSize(*json.load(f))
+                self.window_size = json.load(f)
         except OSError:
-            properties.setSize(1000, 750)
+            pass
+
+        properties = WindowProperties()
+        properties.setSize(*self.window_size)
         self.win.requestProperties(properties)
 
         # for region in self.win.getActiveDisplayRegions():
@@ -31,8 +35,6 @@ class Environement(ShowBase):
             path.join(path.dirname(__file__), "..", "environment.bam")
         )
         self.environment.reparentTo(self.render)
-
-        # self.questionnaire = Questionnaire()
 
         # self.region = self.win.makeDisplayRegion()
         # self.region.setCamera(self.environment.find("Camera/Camera"))
@@ -62,6 +64,16 @@ class Environement(ShowBase):
         # self.environment.setLight(light)
 
         self.set_test_article(self.test_article)
+
+        self.taskMgr.add(self.setup_gui, "Setup GUI")
+
+    def setup_gui(self, task):
+        if abs(self.window_size[0] - self.win.getXSize()) < 10 and abs(self.window_size[1] - self.win.getYSize()) < 10:
+            self.toolbar = Toolbar()
+            self.toolbar.set_buttons({"Reset": self.toolbar.hide, "Next": self.toolbar.hide, "Another": self.toolbar.hide})
+            return task.done
+        else:
+            return task.cont
 
     def set_texture(self):
         self.tex.setRamImage(self.tex_image.tobytes())
