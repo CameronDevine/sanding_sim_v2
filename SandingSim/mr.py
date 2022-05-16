@@ -103,7 +103,7 @@ class MR(Control):
                 k1=self.test_article_curvature_x,
                 k2=self.test_article_curvature_y,
             )[0]
-            if self.classifier.classify(self.mr_sim.vl_x, base.clock.dt):
+            if self.trigger > 0 and self.classifier.classify(self.mr_sim.vl_x, base.clock.dt):
                 force = self.max_force
             return force
         else:
