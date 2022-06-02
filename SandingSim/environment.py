@@ -2,7 +2,6 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import WindowProperties, AmbientLight
 import numpy as np
 from os import path
-from .questionnaire import Questionnaire
 import json
 from .toolbar import Toolbar
 
@@ -57,6 +56,7 @@ class Environement(ShowBase):
             .copy()
             .reshape(self.tex_x, self.tex_y, 3)
         )
+        self.tex_image_orig = self.tex_image.copy()
 
         # self.tex_image[365,:,:] = 255
 
@@ -79,7 +79,7 @@ class Environement(ShowBase):
             and abs(self.window_size[1] - self.win.getYSize()) < 10
         ):
             self.toolbar = Toolbar()
-            self.toolbar.set_buttons({"Reset": self.toolbar.hide, "Next": self.toolbar.hide, "Another": self.toolbar.hide})
+            self.start_flow()
             return task.done
         else:
             return task.cont

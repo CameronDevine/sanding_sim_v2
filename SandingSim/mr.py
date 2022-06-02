@@ -187,6 +187,11 @@ class MR(Control):
 
         return task.cont
 
+    def reset(self):
+        self.tex_image = self.tex_image_orig
+        self.mr_sim.profile = 0
+        self.set_texture()
+
     @property
     def test_article_curvature_y(self):
         curvature_slope = (
