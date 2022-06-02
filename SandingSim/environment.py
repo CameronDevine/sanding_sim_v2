@@ -22,7 +22,7 @@ class Environement(ShowBase):
 
         self.window_size = (1000, 750)
         try:
-            with open(path.join(path.dirname(__file__), '..', "window.json")) as f:
+            with open(path.join(path.dirname(__file__), "..", "window.json")) as f:
                 self.window_size = json.load(f)
         except OSError:
             pass
@@ -42,9 +42,7 @@ class Environement(ShowBase):
         # self.region = self.win.makeDisplayRegion()
         # self.region.setCamera(self.environment.find("Camera/Camera"))
         camera_node = self.environment.find("Camera/Camera")
-        self.win.getActiveDisplayRegions()[0].setCamera(
-            camera_node
-        )
+        self.win.getActiveDisplayRegions()[0].setCamera(camera_node)
 
         camera = camera_node.node()
         lens = camera.getLens()
@@ -76,7 +74,10 @@ class Environement(ShowBase):
         self.taskMgr.add(self.setup_gui, "Setup GUI")
 
     def setup_gui(self, task):
-        if abs(self.window_size[0] - self.win.getXSize()) < 10 and abs(self.window_size[1] - self.win.getYSize()) < 10:
+        if (
+            abs(self.window_size[0] - self.win.getXSize()) < 10
+            and abs(self.window_size[1] - self.win.getYSize()) < 10
+        ):
             self.toolbar = Toolbar()
             self.toolbar.set_buttons({"Reset": self.toolbar.hide, "Next": self.toolbar.hide, "Another": self.toolbar.hide})
             return task.done
