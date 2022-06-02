@@ -8,7 +8,10 @@ from .toolbar import Toolbar
 
 
 class Environement(ShowBase):
-    test_article = "curved"
+    test_article = "flat"
+    curved_curvature_x = 1.25
+    curved_curvature_start = 10
+    curved_curvature_end = 0.667
 
     def __init__(self):
         super().__init__()
@@ -145,15 +148,15 @@ class Environement(ShowBase):
 
     @property
     def test_article_curvature_end(self):
-        return self.if_curved_flat(0.667, 0)
+        return self.if_curved_flat(self.curved_curvature_end, 0)
 
     @property
     def test_article_curvature_start(self):
-        return self.if_curved_flat(10, 0)
+        return self.if_curved_flat(self.curved_curvature_start, 0)
 
     @property
     def test_article_curvature_x(self):
-        return self.if_curved_flat(1.25, 0)
+        return self.if_curved_flat(self.curved_curvature_x, 0)
 
     @property
     def dt(self):
