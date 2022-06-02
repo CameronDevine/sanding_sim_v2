@@ -1,55 +1,44 @@
 from direct.gui.DirectGui import *
-from panda3d.core import LPoint3
+from .gui import GUI
 
 
-class Toolbar:
-    spacing_ratio = 0.2
+class Toolbar(GUI):
+    spacing_ratio = 0.3
 
-    def __init__(self):
-        self.frame = DirectFrame(frameColor=(1, 1, 1, 1), frameSize=(self.left, self.right, self.bottom, self.bottom + 0.1 * self.height))
+    def __init__(self, *args):
+        super().__init__(
+            (
+                self.window_left,
+                self.window_right,
+                self.window_bottom,
+                self.window_bottom + 0.1 * self.window_height,
+            )
+        )
+        self.buttons = []
 
     def set_buttons(self, buttons):
-        for button in self.frame.children:
+        for button in self.buttons:
             button.destroy()
+        self.buttons = []
         for button, func in buttons.items():
-            DirectButton(parent=self.frame, text=button, pressEffect=1, command=func, scale=0.1, frameColor=(0, 0, 1, 1))
-        num_buttons = len(buttons)
-        spacing = self.spacing_ratio * self.height
+            self.buttons.append(self.button(text=button, command=func))
+        num_buttons = len(self.buttons)
+        spacing = self.spacing_ratio * self.window_height
         width = spacing * (num_buttons - 1)
         for i, button in enumerate(self.frame.children):
-            pos = LPoint3(-width / 2 + i * spacing, 0, self.bottom + 0.05 * self.height)
-            curr = button.getBounds().center
-            button.setPos(button.getPos() + pos - curr)
+            self.place_center(
+                button,
+                (
+                    -width / 2 + i * spacing,
+                    0,
+                    self.window_bottom + 0.05 * self.window_height,
+                ),
+            )
 
-    def hide(self):
-        self.frame.hide()
+    def disable(self):
+        for button in self.buttons:
+            button["state"] = DGG.DISABLED
 
-    def show(self):
-        self.frame.show()
-
-    def destroy(self):
-        self.frame.destroy()
-
-    @property
-    def top(self):
-        return base.aspect2d.find("a2dTopCenter").getZ()
-
-    @property
-    def bottom(self):
-        return base.aspect2d.find("a2dBottomCenter").getZ()
-
-    @property
-    def right(self):
-        return base.aspect2d.find("a2dRightCenter").getX()
-
-    @property
-    def left(self):
-        return base.aspect2d.find("a2dLeftCenter").getX()
-
-    @property
-    def height(self):
-        return self.top - self.bottom
-
-    @property
-    def width(self):
-        return self.right - self.left
+    def enable(self):
+        for button in self.buttons:
+            button["state"] = DGG.NORMAL
