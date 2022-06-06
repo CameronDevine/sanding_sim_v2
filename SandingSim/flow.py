@@ -10,10 +10,8 @@ class Flow(DataLog):
     def __init__(self):
         self.state = 0
         self.control = "force"
-        self.order = [
-            self.control_methods[:: random.randrange(-1, 2, 2)] for i in range(2)
-        ]
         self.states = [
+            {"enter": self.start_experiment},
             {"enter": self.start_example},
             {"enter": self.start_trial, "enter_args": (0, 0), "exit": self.end_trial},
             {"enter": self.start_trial, "enter_args": (0, 1), "exit": self.end_trial},
@@ -42,6 +40,12 @@ class Flow(DataLog):
         if self.state >= len(self.states):
             self.state = 0
         self.states[self.state]["enter"](*self.states[self.state].get("enter_args", []))
+
+    def start_experiment(self):
+        self.order = [
+            self.control_methods[:: random.randrange(-1, 2, 2)] for i in range(2)
+        ]
+        self.next()
 
     def start_example(self):
         self.control = "force"
