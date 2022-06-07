@@ -65,6 +65,7 @@ class Flow(DataLog):
                 "Next": self.next,
             }
         )
+        self.toolbar.set_info("Test {}".format(index))
         self.control = self.order[experiment][test]
         self.set_test_article(self.test_articles[experiment])
         self.log_next_experiment()
