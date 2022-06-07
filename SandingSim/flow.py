@@ -1,6 +1,8 @@
 from .datalog import DataLog
 import random
 from .questionnaire import Questionnaire
+from .sure import Sure
+from .comments import Comments
 
 
 class Flow(DataLog):
@@ -13,22 +15,41 @@ class Flow(DataLog):
         self.states = [
             {"enter": self.start_experiment},
             {"enter": self.start_example},
-            {"enter": self.start_trial, "enter_args": (0, 0), "exit": self.end_trial},
-            {"enter": self.start_trial, "enter_args": (0, 1), "exit": self.end_trial},
+            {
+                "enter": self.start_trial,
+                "enter_args": (0, 0, "A"),
+                "exit": self.end_trial,
+            },
+            {
+                "enter": self.start_trial,
+                "enter_args": (0, 1, "B"),
+                "exit": self.end_trial,
+            },
             {
                 "enter": self.show_questionnaire,
                 "enter_args": ("A", "B"),
                 "exit": self.save_responses,
             },
-            {"enter": self.start_trial, "enter_args": (1, 0), "exit": self.end_trial},
-            {"enter": self.start_trial, "enter_args": (1, 1), "exit": self.end_trial},
+            {
+                "enter": self.start_trial,
+                "enter_args": (1, 0, "C"),
+                "exit": self.end_trial,
+            },
+            {
+                "enter": self.start_trial,
+                "enter_args": (1, 1, "D"),
+                "exit": self.end_trial,
+            },
             {
                 "enter": self.show_questionnaire,
                 "enter_args": ("C", "D"),
                 "exit": self.save_responses,
             },
+            {"enter": self.show_comments, "exit": self.save_comments},
+            {"enter": self.save},
         ]
         super().__init__()
+        self.sure = Sure(self.next)
 
     def start_flow(self):
         self.states[self.state]["enter"](*self.states[self.state].get("enter_args", []))
@@ -55,14 +76,14 @@ class Flow(DataLog):
         self.toolbar.set_buttons(
             {
                 "Reset": self.reset,
-                "Next": self.next,
+                "Next": self.sure.show,
             }
         )
 
-    def start_trial(self, experiment, test):
+    def start_trial(self, experiment, test, index):
         self.toolbar.set_buttons(
             {
-                "Next": self.next,
+                "Next": self.sure.show,
             }
         )
         self.toolbar.set_info("Test {}".format(index))
@@ -107,3 +128,15 @@ class Flow(DataLog):
     def save_responses(self):
         self.save_answers(self.questionnaire.get_answers())
         self.questionnaire.destroy()
+
+    def show_comments(self):
+        self.toolbar.set_buttons({"Next": self.next})
+        self.comments = Comments()
+
+    def save_comments(self):
+        self.save_answers(self.comments.get_answers())
+        self.comments.destroy()
+
+    def save(self):
+        self.upload_data()
+        self.next()
