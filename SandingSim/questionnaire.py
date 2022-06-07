@@ -58,6 +58,9 @@ class Questionnaire(GUI):
                 return False
         return True
 
+    def get_answers(self):
+        return [resp for (resp,) in self.responses]
+
     @property
     def top(self):
         return self.window_top - 0.05 * self.window_height
