@@ -45,6 +45,7 @@ class Flow(DataLog):
         self.order = [
             self.control_methods[:: random.randrange(-1, 2, 2)] for i in range(2)
         ]
+        self.init_data()
         self.next()
 
     def start_example(self):
@@ -66,10 +67,13 @@ class Flow(DataLog):
         )
         self.control = self.order[experiment][test]
         self.set_test_article(self.test_articles[experiment])
+        self.log_next_experiment()
         self.reset()
+        self.log_active = True
 
     def end_trial(self):
-        pass
+        self.log_active = False
+        self.toolbar.set_info("")
 
     def show_questionnaire(self, *labels):
         self.toolbar.set_buttons(
@@ -100,4 +104,5 @@ class Flow(DataLog):
             return task.cont
 
     def save_responses(self):
+        self.save_answers(self.questionnaire.get_answers())
         self.questionnaire.destroy()
