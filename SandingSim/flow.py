@@ -3,6 +3,7 @@ import random
 from .questionnaire import Questionnaire
 from .sure import Sure
 from .comments import Comments
+from .slide import Slide, TextSlide
 
 
 class Flow(DataLog):
@@ -14,7 +15,85 @@ class Flow(DataLog):
         self.control = "force"
         self.states = [
             {"enter": self.start_experiment},
+            {
+                "enter": self.show_start,
+                "enter_args": (
+                    'Sanding Experiment:\n\nThis is an experiment to determine if an assistive feature of a sanding\nrobot is effective. This experiment should take under 10 minutes to complete.\n\nBy clicking "Start" you certify that you are at least 18 years of age.',
+                ),
+                "exit": self.hide_slide,
+            },
+            {
+                "enter": self.show_slide,
+                "enter_args": (
+                    "In this experiment your job is to remove the blue area\nof the part by controlling a sander.",
+                    "start.png",
+                ),
+                "exit": self.hide_slide,
+            },
+            {
+                "enter": self.show_slide,
+                "enter_args": (
+                    "As you sand the color will gradually change.",
+                    "colorbar.png",
+                ),
+                "exit": self.hide_slide,
+            },
+            {
+                "enter": self.show_slide,
+                "enter_args": (
+                    "When you are done, it should look like this.",
+                    "goal.png",
+                ),
+                "exit": self.hide_slide,
+            },
+            {
+                "enter": self.show_slide,
+                "enter_args": (
+                    "If you sand too much in an area, it will start to change to this color.",
+                    "over.png",
+                ),
+                "exit": self.hide_slide,
+            },
+            {
+                "enter": self.show_slide,
+                "enter_args": (
+                    "The sander can be moved to the left and right using the left joystick\non the controller.",
+                    "up.png",
+                ),
+                "exit": self.hide_slide,
+            },
+            {
+                "enter": self.show_slide,
+                "enter_args": (
+                    "By default, the sander hovers above the surface.",
+                    "up.png",
+                ),
+                "exit": self.hide_slide,
+            },
+            {
+                "enter": self.show_slide,
+                "enter_args": (
+                    "To start sanding, pull on the left trigger on the controller.",
+                    "down.png",
+                ),
+                "exit": self.hide_slide,
+            },
+            {
+                "enter": self.show_slide,
+                "enter_args": (
+                    'Click next to start an example that you can use to get aquainted with the controls.\nPress "Reset" if you would like to start over and try again.',
+                    "down.png",
+                ),
+                "exit": self.hide_slide,
+            },
             {"enter": self.start_example},
+            {
+                "enter": self.show_text_slide,
+                "enter_args": (
+                    'There are four tests total, with a series of questions after each set of two.\n\nWhen you are ready to begin the recorded portion of the experiment, click "Next".',
+                ),
+                "exit": self.hide_slide,
+            },
             {
                 "enter": self.start_trial,
                 "enter_args": (0, 0, "A"),
@@ -29,6 +108,29 @@ class Flow(DataLog):
                 "enter": self.show_questionnaire,
                 "enter_args": ("A", "B"),
                 "exit": self.save_responses,
+            },
+            {
+                "enter": self.show_slide,
+                "enter_args": (
+                    "The next two tests use a different test article that is curved.",
+                    "curved.png",
+                ),
+                "exit": self.hide_slide,
+            },
+            {
+                "enter": self.show_slide,
+                "enter_args": (
+                    "This test article is less curved on the left and more curved on the right.",
+                    "curved.png",
+                ),
+                "exit": self.hide_slide,
+            },
+            {
+                "enter": self.show_text_slide,
+                "enter_args": (
+                    'When you are ready to begin the next recorded portion\nof the experiment, click "Next"',
+                ),
+                "exit": self.hide_slide,
             },
             {
                 "enter": self.start_trial,
@@ -46,6 +148,13 @@ class Flow(DataLog):
                 "exit": self.save_responses,
             },
             {"enter": self.show_comments, "exit": self.save_comments},
+            {
+                "enter": self.show_text_slide,
+                "enter_args": (
+                    'Thank you for completing this experiment.\n\nClick "Next" to submit your responses and\nallow the next participant to complete the experiment.',
+                ),
+                "exit": self.hide_slide,
+            },
             {"enter": self.save},
         ]
         super().__init__()
@@ -96,6 +205,36 @@ class Flow(DataLog):
     def end_trial(self):
         self.log_active = False
         self.toolbar.set_info("")
+
+    def show_slide(self, *args):
+        self.slide = Slide(*args)
+        self.toolbar.set_buttons(
+            {
+                "Next": self.next,
+            }
+        )
+        self.toolbar.set_info("")
+
+    def show_text_slide(self, *args):
+        self.slide = TextSlide(*args)
+        self.toolbar.set_buttons(
+            {
+                "Next": self.next,
+            }
+        )
+        self.toolbar.set_info("")
+
+    def show_start(self, *args):
+        self.slide = TextSlide(*args)
+        self.toolbar.set_buttons(
+            {
+                "Start": self.next,
+            }
+        )
+        self.toolbar.set_info("")
+
+    def hide_slide(self):
+        self.slide.destroy()
 
     def show_questionnaire(self, *labels):
         self.toolbar.set_buttons(
