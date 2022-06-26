@@ -5,6 +5,7 @@ from datetime import datetime
 import boto3
 from botocore import UNSIGNED
 from botocore.client import Config
+from gzip import compress
 
 
 class Data:
@@ -96,5 +97,7 @@ class DataLog(MR):
     def upload_data(self):
         self.data.add_metadata("end", str(datetime.now()))
         self.s3_client.put_object(
-            Bucket=self.bucket, Body=json.dumps(self.data.data), Key=str(uuid())
+            Bucket=self.bucket,
+            Body=compress(json.dumps(self.data.data)),
+            Key=str(uuid()),
         )
