@@ -20,7 +20,7 @@ class MR(Control):
     sander_radius = 0.122 / 2
     pad_stiffness = 70.5e6 / 50
     window_length = 0.18
-    window_width = 0.03
+    window_width = 0.02
 
     max_force_curved = 8
     max_force_flat = 20
