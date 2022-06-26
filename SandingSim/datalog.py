@@ -61,8 +61,6 @@ class DataLog(MR):
     def log_profile(self):
         self.data.log_final(
             profile=self.mr_sim.profile.tolist(),
-            X=self.mr_sim.X.tolist(),
-            Y=self.mr_sim.Y.tolist(),
         )
 
     def log_next_experiment(self):
@@ -93,6 +91,8 @@ class DataLog(MR):
         self.data.add_metadata("max_force_flat", self.max_force_flat)
         self.data.add_metadata("depth_over", self.depth_over)
         self.data.add_metadata("depth_done", self.depth_done)
+        self.data.add_metadata("x", self.mr_sim.X[0, :].tolist())
+        self.data.add_metadata("y", self.mr_sim.Y[:, 0].tolist())
 
     def upload_data(self):
         self.data.add_metadata("end", str(datetime.now()))
