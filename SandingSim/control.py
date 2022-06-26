@@ -11,6 +11,7 @@ class Control(Environement):
     vel = 0
     hover_distance = 0.03
     end = 0
+    binary_trigger = True
 
     def __init__(self):
         super().__init__()
@@ -57,7 +58,11 @@ class Control(Environement):
     def trigger(self):
         if not self.controller:
             return 0
-        return self.controller.findAxis(InputDevice.Axis.left_trigger).value
+        trigger = self.controller.findAxis(InputDevice.Axis.left_trigger).value
+        if self.binary_trigger:
+            return 1 if trigger > 0 else 0
+        else:
+            return trigger
 
     def move(self, task):
         if not self.controller:
