@@ -55,14 +55,17 @@ class Control(Environement):
         return self.controller.findAxis(InputDevice.Axis.left_x).value
 
     @property
-    def trigger(self):
+    def raw_trigger(self):
         if not self.controller:
             return 0
-        trigger = self.controller.findAxis(InputDevice.Axis.left_trigger).value
+        return self.controller.findAxis(InputDevice.Axis.left_trigger).value
+
+    @property
+    def trigger(self):
         if self.binary_trigger:
-            return 1 if trigger > 0 else 0
+            return 1 if self.trigger > 0 else 0
         else:
-            return trigger
+            return self.trigger
 
     def move(self, task):
         if not self.controller:

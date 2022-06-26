@@ -53,7 +53,7 @@ class DataLog(MR):
                 pos=self.mr_sim.y,
                 force=self.mr_sim.force,
                 time=base.clock.getFrameTime(),
-                trigger=self.trigger,
+                trigger=self.raw_trigger,
                 stick=self.stick,
             )
         return task.cont
