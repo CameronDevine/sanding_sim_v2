@@ -204,6 +204,7 @@ class Flow(DataLog):
 
     def end_trial(self):
         self.log_active = False
+        self.log_profile()
         self.toolbar.set_info("")
 
     def show_slide(self, *args):
