@@ -33,7 +33,7 @@ class Flow(DataLog):
             {
                 "enter": self.show_slide,
                 "enter_args": (
-                    "As you sand the color will gradually change.",
+                    "As you sand, the color will gradually change.",
                     "colorbar.png",
                 ),
                 "exit": self.hide_slide,
@@ -81,7 +81,7 @@ class Flow(DataLog):
             {
                 "enter": self.show_slide,
                 "enter_args": (
-                    'Click next to start an example that you can use to get aquainted with the controls.\nPress "Reset" if you would like to start over and try again.',
+                    'Click "Next" to start an example that you can use to get aquainted with the controls.\nPress "Reset" if you would like to start over and try again.',
                     "down.png",
                 ),
                 "exit": self.hide_slide,
