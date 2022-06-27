@@ -11,6 +11,7 @@ class Simulation(MR):
         self.stick_value = -1
         super().__init__()
         self.is_simulation = True
+        self.controller = True
         self.sander_y = self.amp
 
     @property
@@ -40,7 +41,7 @@ for test_article in ("flat", "curved"):
     profile = [None, None]
     case = ([], [])
     for i, control in enumerate(methods):
-        # print(test_article, control)
+        print(test_article, control)
         vl_x = []
         x = []
         sim = Simulation(control, test_article)
