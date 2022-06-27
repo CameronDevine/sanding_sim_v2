@@ -63,9 +63,9 @@ class Control(Environement):
     @property
     def trigger(self):
         if self.binary_trigger:
-            return 1 if self.trigger > 0 else 0
+            return 1 if self.raw_trigger > 0 else 0
         else:
-            return self.trigger
+            return self.raw_trigger
 
     def move(self, task):
         if not self.controller:
