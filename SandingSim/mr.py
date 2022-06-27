@@ -53,16 +53,18 @@ class MR(Control):
         )
         k1 = np.mean([self.curved_curvature_start, self.curved_curvature_end])
         k2 = self.curved_curvature_x
+        phi = 0
         ws = 2 * np.sqrt(
             2
             * (
-                np.sin(self.mr_controller.phi) ** 2 / k1
-                + np.cos(self.mr_controller.phi) ** 2 / k2
+                np.sin(phi) ** 2 / k2
+                + np.cos(phi) ** 2 / k1
             )
         )
         d = np.sqrt(
             self.max_force_curved * np.sqrt(k1 * k2) / (np.pi * self.pad_stiffness)
         )
+        assert self.sander_radius >= np.sqrt(2 * d / k2)
         self.hbar_max_curved = (
             self.kp
             * self.eccentricity
