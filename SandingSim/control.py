@@ -11,7 +11,7 @@ class Control(Environement):
     vel = 0
     hover_distance = 0.03
     end = 0
-    binary_trigger = True
+    binary_trigger = False
 
     def __init__(self):
         super().__init__()
