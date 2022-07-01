@@ -98,6 +98,6 @@ class DataLog(MR):
         self.data.add_metadata("end", str(datetime.now()))
         self.s3_client.put_object(
             Bucket=self.bucket,
-            Body=compress(json.dumps(self.data.data)),
+            Body=compress(json.dumps(self.data.data).encode()),
             Key=str(uuid()),
         )
