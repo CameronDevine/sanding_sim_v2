@@ -50,7 +50,7 @@ class DataLog(MR):
     def log(self, task):
         if self.log_active:
             self.data.log(
-                pos=self.mr_sim.y,
+                pos=self.mr_sim.x,
                 force=self.mr_sim.force,
                 time=base.clock.getFrameTime(),
                 trigger=self.raw_trigger,
