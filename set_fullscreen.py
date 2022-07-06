@@ -11,6 +11,9 @@ class WindowSaver(Environement):
 
         base.finalExitCallbacks.append(self.save_size)
 
+    def setup_gui(self, task):
+        return task.done
+
     def save_size(self):
         with open(path.join(path.dirname(__file__), "window.json"), "w") as f:
             json.dump(
