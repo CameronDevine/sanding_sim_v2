@@ -63,20 +63,20 @@ class OrbitalDepthControl:
     def calculate_case1_f(self, d=None):
         if d is None:
             d = self.calculate_case1_d()
-        return self.stiffness * np.pi * d ** 2 / np.sqrt(self.k1 * self.k2)
+        return self.stiffness * np.pi * d**2 / np.sqrt(self.k1 * self.k2)
 
     def calculate_case2_d(self, f=None):
         if f is None:
             f = self.calculate_flat()
         return (
-            f / (self.stiffness * np.pi * self.R ** 2)
-            + self.R ** 2 * (self.k1 + self.k2) / 8
+            f / (self.stiffness * np.pi * self.R**2)
+            + self.R**2 * (self.k1 + self.k2) / 8
         )
 
     def find_case3_d(self):
         res = minimize_scalar(
             self.case3_objective,
-            bounds=(self.R ** 2 * self.k2 / 2, self.R ** 2 * self.k1 / 2),
+            bounds=(self.R**2 * self.k2 / 2, self.R**2 * self.k1 / 2),
             method="bounded",
             options={"xatol": 1e-6},
         )
@@ -84,7 +84,7 @@ class OrbitalDepthControl:
 
     def calculate_case3_theta(self, d):
         return np.arctan(
-            np.sqrt((self.R ** 2 * self.k2 - 2 * d) / (2 * d - self.R ** 2 * self.k1))
+            np.sqrt((self.R**2 * self.k2 - 2 * d) / (2 * d - self.R**2 * self.k1))
         )
 
     def calculate_case3_f(self, d):
@@ -93,12 +93,12 @@ class OrbitalDepthControl:
             4
             * self.stiffness
             * (
-                d ** 2
+                d**2
                 / (2 * np.sqrt(self.k1 * self.k2))
                 * (np.pi / 2 - np.arctan(np.sqrt(self.k1 / self.k2) * np.tan(theta)))
-                + d * self.R ** 2 * theta / 2
-                - self.R ** 4 / 16 * self.k2 * (theta + np.sin(2 * theta) / 2)
-                - self.R ** 4 / 16 * self.k1 * (theta - np.sin(2 * theta) / 2)
+                + d * self.R**2 * theta / 2
+                - self.R**4 / 16 * self.k2 * (theta + np.sin(2 * theta) / 2)
+                - self.R**4 / 16 * self.k1 * (theta - np.sin(2 * theta) / 2)
             )
         )
 

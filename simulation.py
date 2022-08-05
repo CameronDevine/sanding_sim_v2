@@ -66,8 +66,8 @@ for test_article in ("flat", "curved"):
                 )
                 d2 = (
                     sim.mr_sim.force / (np.pi * sim.pad_stiffness)
-                    + sim.sander_radius ** 4 * (k1 + k2) / 8
-                ) / sim.sander_radius ** 2
+                    + sim.sander_radius**4 * (k1 + k2) / 8
+                ) / sim.sander_radius**2
                 if sim.sander_radius >= np.sqrt(d1 / k2):
                     case[i].append(1)
                 elif sim.sander_radius <= np.sqrt(d2 / k1):
