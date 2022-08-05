@@ -2,6 +2,7 @@ from SandingSim.mr import MR
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
+import sys
 
 
 class Simulation(MR):
@@ -132,11 +133,11 @@ for test_article in ("flat", "curved"):
     plt.legend()
 
 plt.figure()
-plt.plot(vl_x)
-plt.xlabel("loop index")
+plt.plot(np.arange(0, sim.dt * len(vl_x), sim.dt), vl_x)
+plt.xlabel("time (s)")
 plt.ylabel("velocity (m/s)")
-plt.text(4000, -0.15, "Average Speed {}m/s".format(np.mean(np.abs(vl_x))))
+# plt.text(4000, -0.15, "Average Speed {}m/s".format(np.mean(np.abs(vl_x))))
 
-with PdfPages("simulation.pdf") as pdf:
+with PdfPages(sys.argv[1]) as pdf:
     for fig in plt.get_fignums():
         pdf.savefig(fig)
