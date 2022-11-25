@@ -140,4 +140,4 @@ plt.ylabel("velocity (m/s)")
 
 with PdfPages(sys.argv[1]) as pdf:
     for fig in plt.get_fignums():
-        pdf.savefig(fig)
+        pdf.savefig(fig, bbox_inches="tight")
