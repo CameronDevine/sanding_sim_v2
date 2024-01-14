@@ -54,13 +54,7 @@ class MR(Control):
         k1 = np.mean([self.curved_curvature_start, self.curved_curvature_end])
         k2 = self.curved_curvature_x
         phi = 0
-        ws = 2 * np.sqrt(
-            2
-            * (
-                np.sin(phi) ** 2 / k2
-                + np.cos(phi) ** 2 / k1
-            )
-        )
+        ws = 2 * np.sqrt(2 * (np.sin(phi) ** 2 / k2 + np.cos(phi) ** 2 / k1))
         d = np.sqrt(
             self.max_force_curved * np.sqrt(k1 * k2) / (np.pi * self.pad_stiffness)
         )

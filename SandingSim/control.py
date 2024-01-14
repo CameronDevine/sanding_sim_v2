@@ -83,15 +83,15 @@ class Control(Environement):
         if abs(accel) > self.max_accel:
             accel = np.sign(accel) * self.max_accel
         if abs(accel) > 0:
-            stop_pos = self.vel ** 2 / (2 * accel) + self.sander_y
+            stop_pos = self.vel**2 / (2 * accel) + self.sander_y
         elif self.vel != 0:
             stop_pos = (
-                self.vel ** 2 / (2 * np.sign(self.vel) * self.max_accel) + self.sander_y
+                self.vel**2 / (2 * np.sign(self.vel) * self.max_accel) + self.sander_y
             )
         else:
             stop_pos = self.sander_y
         if abs(stop_pos) >= self.amp and stop_pos * vel > 0:
-            accel = self.vel ** 2 / (2 * (self.sander_y - np.sign(stop_pos) * self.amp))
+            accel = self.vel**2 / (2 * (self.sander_y - np.sign(stop_pos) * self.amp))
         self.vel += self.dt * accel
         old_y = self.sander_y
         self.sander_y += self.dt * self.vel
